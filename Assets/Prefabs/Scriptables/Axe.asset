@@ -19,6 +19,6 @@ MonoBehaviour:
   maxStackAmount: 0
   itemPrefab: {fileID: 377479775960272811, guid: 6aa89440d82830541ab19ead3b490466, type: 3}
   weaponName: Axe
-  attackDamage: 20
+  attackDamage: 30
   attackRate: 0
   durability: 0

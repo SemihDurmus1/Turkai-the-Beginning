@@ -132,30 +132,7 @@ namespace StarterAssets
 			CameraRotation();
 		}
 
-        void OnAttackAnimationStart()//Animation Event
-        {
-			Debug.Log("Ben bir piç olduðum için çalýþmýyorum");
-
-			if (_playerAttackSystem == null)
-			{
-                _playerAttackSystem = GetComponentInChildren<AttackSystem>();
-            }
-			//_playerAttackSystem = PlayerManager.Instance.onHandSlot.GetComponentInChildren<AttackSystem>();
-
-            if (_playerAttackSystem != null)
-            {
-				Debug.Log("Attack system bulundu, StartAttacka gidiyo");
-                _playerAttackSystem.StartAttack();
-            }
-        }
-        void OnAttackAnimationEnd()//Animation Event
-        {
-			if (_playerAttackSystem != null)
-			{
-                _playerAttackSystem.EndAttack();
-				isAttacking = false;
-            }
-        }
+        
 
         private void GroundedCheck()
 		{
@@ -244,8 +221,13 @@ namespace StarterAssets
 				inputDirection = transform.right * _input.move.x + transform.forward * _input.move.y;
 			}
 
-			// move the player
-			_controller.Move(inputDirection.normalized * (_speed * Time.deltaTime) + new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
+
+			//Manage the move animations
+			_playerAnimator.SetFloat("YatayEksen", _input.move.x);
+            _playerAnimator.SetFloat("DikeyEksen", _input.move.y);
+
+            // move the player
+            _controller.Move(inputDirection.normalized * (_speed * Time.deltaTime) + new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
 		}
 
 		private void JumpAndGravity()
@@ -310,15 +292,41 @@ namespace StarterAssets
 		{
 			if (_input.attack && !isAttacking)
 			{
-				//InventorySystem.Instance.activeWeapon.weaponAnimator.SetTrigger("Attack");
 				_playerAnimator.SetTrigger("Attack");
-				//_playerAttackSystem.StartAttack();
+
 				isAttacking = true;
                 _input.attack = false;
-			}
+            }
 		}
 
-		private void ToggleInventory()
+        void OnAttackAnimationStart()//Animation Event
+        {
+            if (_playerAttackSystem == null)
+            {
+                _playerAttackSystem = GetComponentInChildren<AttackSystem>();
+            }
+            //_playerAttackSystem = PlayerManager.Instance.onHandSlot.GetComponentInChildren<AttackSystem>();
+
+            if (_playerAttackSystem != null)
+            {
+                _playerAttackSystem.StartAttack();
+            }
+        }
+        void OnAttackAnimationEnd()//Animation Event
+        {
+            if (_playerAttackSystem != null)
+            {
+                _playerAttackSystem.EndAttack();
+                //isAttacking = false;
+            }
+        }
+
+		void CanAttackAgain()
+		{
+            isAttacking = false;
+        }
+
+        private void ToggleInventory()
 		{
             if (Input.GetKeyDown(KeyCode.C))//Buranýn new input sisteme uyarlanmasi gerekiyor
             {

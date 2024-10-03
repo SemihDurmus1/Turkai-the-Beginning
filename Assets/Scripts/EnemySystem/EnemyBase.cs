@@ -38,10 +38,15 @@ public class EnemyBase : MonoBehaviour
         if (isDead) return;
 
         currentHealth -= damage;
-
+        Debug.Log("Arissa take dmg, new health: " + currentHealth);
         if (currentHealth <= 0)
         {
+            currentHealth = 0;
             Die();
+        }
+        else
+        {
+            enemyAnimator.SetTrigger("Hurt");
         }
     }
 
@@ -52,8 +57,11 @@ public class EnemyBase : MonoBehaviour
 
         isDead = true;
 
-        enemyAnimator.SetTrigger("Die");
+        int deathState = Random.Range(0, 5);
 
+        enemyAnimator.SetInteger("deathState", deathState);
+        enemyAnimator.SetTrigger("Die");
+        
         // Saldýrý animasyonunu durdur, böylece saldýrý event'leri çalýþmaz
         enemyAnimator.SetBool("isAttacking", false);
         enemyAnimator.ResetTrigger("Attack");

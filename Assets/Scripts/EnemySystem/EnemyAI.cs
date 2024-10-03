@@ -7,7 +7,7 @@ public class EnemyAI : EnemyBase
     public float detectionRange = 10f;  // The maximum chase distance
     public float attackDistance = 2f;   // Attack Range
 
-    [SerializeField] private float stopDistance = 1f;  // Enemy stand range of on the player
+    [SerializeField] private float stopDistance = 1.5f;  // Enemy stand range of on the player
     [SerializeField] private Transform[] patrolPoints;    // Patrol points
 
     private int currentPatrolIndex = 0;
@@ -49,6 +49,16 @@ public class EnemyAI : EnemyBase
         // Check player in attackRange
         if (Vector3.Distance(transform.position, player.transform.position) <= attackDistance)
         {
+            // Player'ýn konumuna bakmasýný saðla
+            Vector3 directionToPlayer = (player.transform.position - transform.position).normalized;
+            directionToPlayer.y = 0; // Yükseklik farkýný sýfýrla, sadece yatay eksende bakmasýný saðlar
+
+            // Player'a bak
+            transform.rotation = Quaternion.LookRotation(directionToPlayer);
+
+            // Saldýrý animasyonunu baþlat
+            enemyAnimator.SetTrigger("Attack");
+
             enemyAnimator.SetBool("isChasing", false);
             StartAttackAnim();
             enemyAnimator.SetBool("isAttacking", true);

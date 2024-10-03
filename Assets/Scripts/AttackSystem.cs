@@ -1,3 +1,4 @@
+using StarterAssets;
 using UnityEngine;
 
 public class AttackSystem : MonoBehaviour
@@ -6,16 +7,18 @@ public class AttackSystem : MonoBehaviour
 
     //[SerializeField] private int damage = 100;//Burasi silahtan gelen damagei almali
     private bool isAttacking = false;
+    private bool attacked = false;//This for avoid multiple damage each frame
 
     private void OnTriggerStay(Collider other)
     {
-        if (isAttacking && other.CompareTag("Enemy"))//If attacking and obj tag is enemy
+        if (isAttacking && other.CompareTag("Enemy") && !attacked)//If attacking and obj tag is enemy
         {
             //Find enemyscript and getdmg
             EnemyBase enemyScript = other.GetComponent<EnemyBase>();
             if (enemyScript != null)
             {
                 enemyScript.TakeDamage(weaponReference.attackDamage);
+                attacked = true;
             }
         }
     }
@@ -35,6 +38,8 @@ public class AttackSystem : MonoBehaviour
     public void EndAttack()//Animation Event
     {
         isAttacking = false;
+
+        attacked = false;
     }
 
 }
